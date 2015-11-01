@@ -1,0 +1,30 @@
+package com.example.sony.benchmarkprj;
+
+import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class GreetUser extends Activity {
+    public EditText et;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_greet_user);
+        et=(EditText)findViewById(R.id.greetusereditText);
+
+
+    }
+    public void greet(View v)
+    {
+        String name =et.getText().toString();
+        Toast.makeText(getBaseContext(),"Hellooo...."+name,Toast.LENGTH_LONG).show();
+    }
+
+}
