@@ -1,0 +1,158 @@
+package com.example.sony.benchmarkprj;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.media.Image;
+import android.net.Uri;
+import android.os.Build;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.net.Uri;
+import android.widget.Switch;
+
+
+public class InstagramActivity extends AppCompatActivity {
+    public ImageView img;
+    private static final float BITMAP_SCALE = 2.4f;
+    private static final float BLUR_RADIUS = 9.5f;
+    private static final double GS_RED = 0.3;
+    private static final double GS_GREEN = 0.59;
+    private static final double GS_BLUE = 0.11;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_instagram);
+   Intent incomingIntent =getIntent();
+      Uri uriimg = (Uri) getIntent().getExtras().get(Intent.EXTRA_STREAM);
+        img = (ImageView)findViewById(R.id.instaImg);
+       img.setImageURI(uriimg);
+    }
+    public void Convert(View v)
+
+    {
+        img.buildDrawingCache();
+        Bitmap original = img.getDrawingCache();
+        switch(v.getId())
+        {
+            case R.id.graybtn:
+                Bitmap grayScaleBitMap = toGrayScale(original);
+                img.setImageBitmap(grayScaleBitMap);
+                break;
+
+            case R.id.blurbtn:
+                Bitmap grayScaleBitMap1 = blur(this, original);
+                img.setImageBitmap(grayScaleBitMap1);
+                break;
+
+            case R.id.vintagebtn:
+                Bitmap grayScaleBitMap2 = createSepiaToningEffect(original, 20, GS_RED, GS_GREEN,GS_BLUE);
+                img.setImageBitmap(grayScaleBitMap2);
+                break;
+
+        }
+    }
+
+    public Bitmap toGrayScale(Bitmap original) {
+
+
+
+        int width, height;
+        height = original.getHeight();
+        width = original.getWidth();
+
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(original, 0, 0, paint);
+        return bmpGrayscale;
+    }
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static Bitmap blur(Context context, Bitmap image) {
+        int width = Math.round(image.getWidth() * BITMAP_SCALE);
+        int height = Math.round(image.getHeight() * BITMAP_SCALE);
+
+        Bitmap inputBitmap;
+        inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
+        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+
+        RenderScript rs = RenderScript.create(context);
+        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
+        Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
+        theIntrinsic.setRadius(BLUR_RADIUS);
+        theIntrinsic.setInput(tmpIn);
+        theIntrinsic.forEach(tmpOut);
+        tmpOut.copyTo(outputBitmap);
+
+        return outputBitmap;
+    }
+    public static Bitmap createSepiaToningEffect(Bitmap src, int depth, double red, double green, double blue) {
+        // image size
+        int width = src.getWidth();
+        int height = src.getHeight();
+        // create output bitmap
+        Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
+        // constant grayscale
+
+        // color information
+        int A, R, G, B;
+        int pixel;
+
+        // scan through all pixels
+        for(int x = 0; x < width; ++x) {
+            for(int y = 0; y < height; ++y) {
+                // get pixel color
+                pixel = src.getPixel(x, y);
+                // get color on each channel
+                A = Color.alpha(pixel);
+                R = Color.red(pixel);
+                G = Color.green(pixel);
+                B = Color.blue(pixel);
+                // apply grayscale sample
+                B = G = R = (int)(GS_RED * R + GS_GREEN * G + GS_BLUE * B);
+
+                // apply intensity level for sepid-toning on each channel
+                R += (depth * red);
+                if(R > 255) { R = 255; }
+
+                G += (depth * green);
+                if(G > 255) { G = 255; }
+
+                B += (depth * blue);
+                if(B > 255) { B = 255; }
+
+                // set new pixel color to output image
+                bmOut.setPixel(x, y, Color.argb(A, R, G, B));
+            }
+        }
+
+        // return final image
+        return bmOut;
+    }
+}
