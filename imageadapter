@@ -1,0 +1,83 @@
+package com.example.sony.benchmarkprj;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+
+/**
+ * Created by SONY on 10/18/2015.
+ */
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+
+public class ImageAdapter extends BaseAdapter {
+    private Context mContext;
+
+
+    // Keep all Images in array
+    public Integer[] mThumbIds = {
+            R.drawable.calc, R.drawable.freeiconmaker_0,
+            R.drawable.benchmarking, R.drawable.news, R.drawable.crown, R.drawable.home, R.drawable.menu,R.drawable.msg1,R.drawable.camera,
+    R.drawable.music,R.drawable.hello,R.drawable.vedio,R.drawable.sensors,R.drawable.mapsicon};
+    public String[] titleNames = {"Calculator", "Jokes", "BenchMark", "News Activity", "Splash Screen", "Address", "Options","SMS","Instagram","Greet","Vedio Player","Sensor","Maps"};
+
+    // Constructor
+    public ImageAdapter(Context c) {
+        mContext = c;
+    }
+
+    @Override
+    public int getCount() {
+        return mThumbIds.length;
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mThumbIds[position];
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+
+       /* View MyView = convertView;
+       *//* LayoutInflater inflater = (LayoutInflater) mContext
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);*//*
+
+        if (convertView != null) {
+
+*/
+            ImageView imageView = new ImageView(mContext);
+            imageView.setImageResource(mThumbIds[position]);
+           /* TextView tvresult = new TextView(mContext);
+            tvresult.setText(titleNames[position]);*/
+
+
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+          /*  imageView.setMaxHeight(30);
+            imageView.setMaxWidth(50);*/
+            imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
+           // tvresult.setLayoutParams(new GridView.LayoutParams(50, 50));
+return imageView;
+
+
+
+
+    }
+    }
+
+
+
+
+
+
+
