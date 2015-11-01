@@ -1,0 +1,50 @@
+package com.example.sony.benchmarkprj;
+
+import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+import android.os.Bundle;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+public class MapsActivity1 extends Activity implements OnMapReadyCallback {
+
+   // private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps1);
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        LatLng bangalore = new LatLng(16.5083,80.6417);
+
+        map.setMyLocationEnabled(true);
+       map.moveCamera(CameraUpdateFactory.newLatLngZoom(bangalore, 10));
+       /* map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(16.5083,80.6417),9));*/
+
+        map.addMarker(new MarkerOptions()
+              .title("Vijayawada")
+                .snippet("The most populous city in India.")
+               // .icon(BitmapDescriptorFactory.fromResource(R.drawable.maps))
+                .anchor(0.0f, 1.0f)
+                .position(bangalore));
+
+
+    }
+
+
+}
