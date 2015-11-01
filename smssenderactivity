@@ -1,0 +1,105 @@
+package com.example.sony.benchmarkprj;
+
+import android.content.Intent;
+
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.telephony.SmsManager;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class SMSSenderActivity extends AppCompatActivity {
+    EditText etphmsg,etphno;
+    int PICT_CONTACTS=1;
+
+    String contactNumber=null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_smssender);
+        etphmsg=(EditText)findViewById(R.id.phedit);
+        etphno=(EditText)findViewById(R.id.phno);
+    }
+    public void selectContact(View v)
+    {
+        Intent intent =new Intent(getBaseContext(),ContactsPick.class);
+        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(contactPickerIntent,1);
+        // Toast.makeText(getBaseContext(),"hello",Toast.LENGTH_LONG).show();*/
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode==PICT_CONTACTS && resultCode==RESULT_OK)
+        {
+            Uri contactUri = data.getData();
+            /*String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER};*/
+            String[] projection={ContactsContract.Contacts._ID};
+            Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null);
+            cursor.moveToFirst();
+
+            String contactID = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+
+            //    int column = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+            Cursor cursorPhone = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                    new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
+
+                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ? AND " + ContactsContract.CommonDataKinds.Phone.TYPE + " = " +
+                            ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE,
+
+                    new String[]{contactID},
+                    null);
+
+
+            if (cursorPhone.moveToFirst()) {
+                contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+            }
+
+            cursorPhone.close();
+            Toast.makeText(this,""+contactNumber,Toast.LENGTH_LONG).show();
+            etphno.setText(contactNumber);
+        }
+
+
+
+
+                          /*  String number = cursor.getString(column);
+            etphno.setText(number);*/
+    }
+
+    public void sendSMS(View v) {
+        String msg = etphmsg.getText().toString();
+        String no = etphno.getText().toString();
+        switch (v.getId()) {
+            case R.id.msgsend:
+
+
+                //int phno = Integer.parseInt(no);
+                if (msg != null) {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage("" + no, null, "" + msg, null, null);
+
+                    Toast.makeText(getBaseContext(), "Message sent", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "Invalid number", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.callButton:
+
+                //String num = etphno.getText().toString();
+                Intent  intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + no));
+                startActivity(intent);
+                break;
+        }
+    }
+}
