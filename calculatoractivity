@@ -1,0 +1,99 @@
+package com.example.sony.benchmarkprj;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+//import static com.example.sony.calculator.R.id.button2;
+
+public class CalculatorActivity extends AppCompatActivity implements View.OnClickListener{
+    EditText editText1,editText2;
+    Button buttonadd,buttonsub,buttonmult,buttondiv;
+    public TextView tvresult;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.calculator_activity);
+        init();
+    }
+
+    private void init() {
+        buttonadd=(Button)findViewById(R.id.button);
+        buttonsub=(Button)findViewById(R.id.button2);
+        buttonmult=(Button)findViewById(R.id.button3);
+        buttondiv=(Button)findViewById(R.id.button4);
+
+        editText1=(EditText)findViewById(R.id.editText);
+        editText2=(EditText)findViewById(R.id.editText2);
+        tvresult=(TextView)findViewById(R.id.textView);
+
+        buttonadd.setOnClickListener(this);
+        buttonsub.setOnClickListener(this);
+        buttonmult.setOnClickListener(this);
+        buttondiv.setOnClickListener(this);
+
+
+    }
+    public void onClick(View v)
+    {
+        String num1=editText1.getText().toString();
+        String num2=editText2.getText().toString();
+        switch(v.getId())
+        {
+            case R.id.button:
+                try {
+                    int addition = Integer.parseInt(num1) + Integer.parseInt(num2);
+                    tvresult.setText(String.valueOf(addition));
+                }
+                catch(Exception e) {
+
+                    tvresult.setText("Enter values");
+
+                }
+                break;
+            case R.id.button2:
+                try {
+                    int subtraction = Integer.parseInt(num1) - Integer.parseInt(num2);
+                    tvresult.setText(String.valueOf(subtraction));
+                }
+                catch(Exception e)
+                {
+                    tvresult.setText("Enter values");
+                }
+                break;
+            case R.id.button3:
+                try {
+                    int multiplication = Integer.parseInt(num1) * Integer.parseInt(num2);
+                    tvresult.setText(String.valueOf(multiplication));
+                }
+                catch(Exception e)
+                {
+                    tvresult.setText("Enter values");
+                }
+                break;
+            case R.id.button4:
+                try {
+                    int division = Integer.parseInt(num1) / Integer.parseInt(num2);
+                    tvresult.setText(String.valueOf(division));
+                }
+                catch (Exception e)
+                {
+                    if(num1.isEmpty())
+                    {
+                        tvresult.setText("Enter values");
+                    }
+                    else
+
+                        tvresult.setText("Cannot Divide");
+                }
+                break;
+        }
+    }
+}
