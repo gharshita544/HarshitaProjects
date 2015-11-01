@@ -1,0 +1,65 @@
+package com.example.sony.benchmarkprj;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Vibrator;
+import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+public class NewsActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_news);
+    }
+
+    public void News(View v) {
+       // Intent i = new Intent(this, NextPageActivity.class);
+
+        switch (v.getId()) {
+
+            case R.id.applenews:
+                Vibrator vibrator=(Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(2000);
+                vibrator.vibrate(2000);
+                vibrator.vibrate(2000);
+                Intent i = new Intent(this, NextPageActivity.class);
+                i.putExtra("News-type", "Apple");
+                startActivity(i);
+                break;
+            case R.id.googlenews:
+                Intent i1 = new Intent(this, NextPageActivity.class);
+                i1.putExtra("News-type", "Google");
+                startActivity(i1);
+                break;
+            case R.id.felightNews:
+                Intent i2 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.felight.com"));
+                //i2.putExtra("News-type", "Felight");
+                startActivity(i2);
+                break;
+     /*  case R.id.cameraopen:
+                Intent cameraintent  = new Intent(getBaseContext(),cameraActivity.class);
+                startActivity(cameraintent);
+                break;*/
+            case R.id.contactsopen:
+                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(contactPickerIntent,1);
+                Toast.makeText(getBaseContext(),"hello",Toast.LENGTH_LONG).show();
+                break;
+
+            case R.id.whatsappopen:
+
+                break;
+
+
+        }
+    }
+}
+
