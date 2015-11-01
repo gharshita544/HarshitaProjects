@@ -1,0 +1,235 @@
+package com.example.sony.benchmarkprj;
+
+
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Build;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+public class FelightJokes extends Activity implements SensorEventListener {
+    public Button b1, b2;
+    TextView t1;
+    int count = 0;
+
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private static final int SHAKE_THRESHOLD = 800;
+    private long lastUpdate;
+    private float x, y, z, last_x, last_y, last_z;
+    public boolean SHAKE_DETECTED;
+
+    List<String> jokes = new ArrayList<String>();
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fjokes_activity);
+
+        b1 = (Button) findViewById(R.id.button);
+        b2 = (Button) findViewById(R.id.button2);
+        t1 = (TextView) findViewById(R.id.textView);
+        t1.setText("Welcome to felight jokes page");
+       /* b1.setOnClickListener(getBaseContext());
+        b2.setOnClickListener(this);*/
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+   /* public void DoSomething(View v) {
+      b1=(Button)findViewById(R.id.button);
+        ArrayList<String> jokes = new ArrayList();
+        jokes.add("a");
+        jokes.add("b");
+        jokes.add("c");
+        jokes.add("d");
+        jokes.add("e");
+        jokes.add("f");
+        Iterator iterator = jokes.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+
+        }
+    }
+    public void Do(View v1) {
+        b2=(Button)findViewById(R.id.button2);
+        ArrayList<String> jokes = new ArrayList();
+        jokes.add("a");
+        jokes.add("b");
+        jokes.add("c");
+        jokes.add("d");
+        jokes.add("e");
+        jokes.add("f");
+        ListIterator iterator = jokes.listIterator();
+       if(iterator.hasPrevious()) {
+            System.out.println(iterator.hasPrevious());
+        }
+    }*/
+
+    // public void doSomething(View v) {
+    @Override
+    public void onSensorChanged(SensorEvent event)
+    {
+
+        jokes.add("Welcome to felight jokes page");
+        jokes.add("Boss: Where were you born?\n" +
+                "Santa : India ..\n" +
+                "Boss: which part?\n" +
+                "Santa : What 'which part'? Whole body was born in India .\n" +
+                "\n");
+        jokes.add("Santa: What is the name of your car?\n" +
+                "Lady: I forgot the name, but is starts with 'T'.\n" +
+                "Santa : Oh, what a strange car, starts with Tea. All cars that I know start with petrol..\n" +
+                "\n");
+        jokes.add("In an interview, Interviewer: How does an electric motor run?\n" +
+                "Santa : Dhhuuuurrrrrrrrrr. .....\n" +
+                "Inteviewer shouts: Stop it.\n" +
+                "Santa : Dhhuurrrr dhup dhup dhup...\n" +
+                "\n");
+        jokes.add("Santa went to temple & saw people puting coin in box & praying\n" +
+                "\n" +
+                "Santa: Wow! How amazing. People are talking to God through coin phone without receiver\n" +
+                "\n");
+        jokes.add("Santa-Oye!what R U doing?\n" +
+                "Banta-Recording this babys voice.\n" +
+                "Santa-Why?\n" +
+                "Banta- When he grows up, I shall ask him what he meant by this..\n"
+               );
+        //count=jokes.indexOf(0);
+        //t1.setText(jokes.get(0));
+        //  t1.setText("First Page");
+        //    try {
+
+
+        // if (/*v.getId() == R.id.button ||*/ SHAKE_DETECTED) {
+              /*  ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(t1, "rotation", 0, 360, 0, 360);
+                objectAnimator.setDuration(5000);
+                objectAnimator.start();*/
+
+
+              /*  while (iterator.hasNext()) {
+                    String element = iterator.next();
+                    t1.setText(element);
+                    t1.setText(jokes.get(++count));*/
+
+            /*    if (*//*v.getId() == R.id.button2 || *//*SHAKE_DETECTED == true) {
+                  *//*  ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(t1, "alpha", 0f, 1f);
+                    objectAnimator1.setDuration(5000);
+                    objectAnimator1.start();*//*
+                    t1.setText(jokes.get(--count));
+                }
+*/
+
+    // }/*
+              /*  catch(Exception e){
+                   //t1.setText("****Only Few selected jokes are displayed here****");
+               e.printStackTrace();
+                }*/
+
+
+    ListIterator<String> iterator = jokes.listIterator();
+
+        long curTime = System.currentTimeMillis();
+        // only allow one update every 100ms.
+        if ((curTime - lastUpdate) > 100) {
+            long diffTime = (curTime - lastUpdate);
+            lastUpdate = curTime;
+
+            x = event.values[0];
+            y = event.values[1];
+            z = event.values[2];
+
+            float speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+            try {
+                if (speed > SHAKE_THRESHOLD) {
+                    while (iterator.hasNext()) {
+                        String element = iterator.next();
+                        t1.setText(element);
+                        t1.setText(jokes.get(++count));
+             /*   Log.d("sensor", "shake detected w/ speed: " + speed);
+                Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
+
+                    // tvShakeStatus.setText("shake detected " + speed);
+                    SHAKE_DETECTED = true;*/
+
+                    }
+                        last_x = event.values[0];
+                        last_y = event.values[1];
+                        last_z = event.values[2];
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+       /* if(count>jokes.size())
+        {
+            t1.setText(jokes.get(count--));
+        }
+
+        // ListIterator iterator = jokes.listIterator();
+        // while (iterator.hasNext()) {
+        //System.out.println(iterator.next());
+        //t1.setText(jokes[count]);
+        /*    if(b1.hasOnClickListeners()==true)
+            {
+                count++;
+            }
+            if(b2.hasOnClickListeners()==true)
+            {
+                count--;
+            }*/
+
+
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sensorManager.unregisterListener(this);
+    }
+}
+
+
+
+
+
+
+
+
