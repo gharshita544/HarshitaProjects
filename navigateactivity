@@ -1,0 +1,123 @@
+package com.example.sony.benchmarkprj;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
+import android.widget.TextView;
+
+import java.util.Arrays;
+
+public class NavigateActivity extends AppCompatActivity{
+    public Button bres,bbs,bss;
+    public TextView tres,tvbubblesortstatus,tvselectionsortstatus;
+    public RadioButton r1, r2, r3;
+    public RadioGroup radg1;
+    public EditText e1;
+    int[] array1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_navigate);
+        bres = (Button) findViewById(R.id.buttonres);
+        e1 = (EditText) findViewById(R.id.arrayvalue);
+        radg1 = (RadioGroup) findViewById(R.id.rg1);
+       // bbs=(Button)findViewById(R.id.buttonbs);
+      //  bss=(Button)findViewById(R.id.buttonss);
+       /* r1 = (RadioButton) findViewById(R.id.bc);
+        r2 = (RadioButton) findViewById(R.id.Ac);
+        r3 = (RadioButton) findViewById(R.id.Wc);*/
+        tres = (TextView) findViewById(R.id.textView);
+        tvbubblesortstatus = (TextView) findViewById(R.id.bubblesorttv);
+        tvselectionsortstatus=(TextView)findViewById(R.id.selectionsorttv);
+    }
+
+    public void GenerateRes(View v) {
+        String ed1 = e1.getText().toString();
+        int array = Integer.parseInt(ed1);
+        // tres.setText("Hello");
+        //  String rbc = r1.getText().toString();
+
+        switch (radg1.getCheckedRadioButtonId()) {
+            case R.id.bc:
+                array1 = Calculator.getNaturalNumbers(array);
+               /*System.out.println("Array of Size " + array1.length +
+                        "  is generated for Best Case Scenario");*/
+                tres.setText(array1.length + " is generated for best Case ");
+                break;
+
+            case R.id.Ac:
+                array1 = Calculator.getRandom(array);
+                tres.setText(array1.length + " is generated for Average Case ");
+                break;
+            //  rbc = r1.getText().toString();
+
+            case R.id.Wc:
+                array1 = Calculator.getReverse(array);
+                tres.setText(array1.length + " is generated for Worst Case ");
+                break;
+            //  rbc = r1.getText().toString();
+
+
+        }
+    }
+    /*  public void SortIt()
+      {
+          if(R.id.bbs)
+          {
+
+          }
+          BubbleSort();
+          SelectionSort();
+
+      }*/
+    public void BubbleSort(View v) {
+        try {
+
+            int[] clone = Arrays.copyOf(array1, array1.length);
+            long start = System.currentTimeMillis();
+            Calculator.doBubbleSort(clone);
+            long timeTaken = System.currentTimeMillis() - start;
+            tvbubblesortstatus.setText("" + timeTaken);
+        } catch (Exception e) {
+            tvbubblesortstatus.setText("");
+        }
+    }
+    public void SelectionSort(View v)
+    {
+        try {
+
+            int[] clone = Arrays.copyOf(array1, array1.length);
+            long start = System.currentTimeMillis();
+            Calculator.doSelectionSort(clone);
+            long timeTaken = System.currentTimeMillis() - start;
+            tvselectionsortstatus.setText("" + timeTaken);
+        }
+        catch (Exception e)
+        {
+            tvselectionsortstatus.setText("");
+        }
+    }
+    public void SortIt(View v)
+    {
+        BubbleSort(v);
+        SelectionSort(v);
+    }
+
+  /*  @Override
+    public void onClick(View v) {
+        String edt1=e1.getText().toString();
+        int e1=Integer.parseInt(edt1);
+   //   id=radg1.getCheckedRadioButtonId();*/
+
+}
+
+
+
