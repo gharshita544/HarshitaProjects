@@ -1,0 +1,152 @@
+package com.example.sony.benchmarkprj;
+
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class SettingsActivity extends AppCompatActivity {
+    Button onbtn, offbtn;
+    private BluetoothAdapter bluetoothAdapter;
+    TextView tv1;
+    public RadioGroup radiogrp;
+    private static final int REQUEST_ENABLE = 1;
+    SharedPreferences sharedPreferences;
+    public static String myPref = "MyPref";
+    private String RADIOGROUP_KEY="RADIO_KEY";
+    public static final String COLOR = "color";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+        onbtn = (Button) findViewById(R.id.bluetoothonbtn);
+        offbtn = (Button) findViewById(R.id.bluetoothoffbtn);
+        tv1 = (TextView) findViewById(R.id.displaytext);
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        radiogrp = (RadioGroup) findViewById(R.id.radiogroup1);
+
+
+        sharedPreferences = getSharedPreferences(myPref, Context.MODE_PRIVATE);
+        int backgroundColor = sharedPreferences.getInt(COLOR, getResources().getColor(R.color.white));
+        RelativeLayout rl =(RelativeLayout)findViewById(R.id.rellayout);
+        rl.setBackgroundColor(backgroundColor);
+       radiogrp.check(sharedPreferences.getInt(RADIOGROUP_KEY, R.id.redradiobtn));
+        if (bluetoothAdapter == null) {
+            onbtn.setEnabled(false);
+
+            offbtn.setEnabled(false);
+            tv1.setText("Status: not supported");
+            Toast.makeText(getApplicationContext(), "Your device does not support Bluetooth",
+
+                    Toast.LENGTH_LONG).show();
+
+        } else {
+            onbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    on(v);
+                }
+            });
+            offbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    off(v);
+                }
+            });
+        }
+    }
+
+    public void on(View v) {
+        if (!bluetoothAdapter.isEnabled()) {
+            Intent turnon = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(turnon, REQUEST_ENABLE);
+            Toast.makeText(getApplicationContext(), "Bluetooth turned on",
+                    Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE) {
+            if (bluetoothAdapter.isEnabled()) {
+
+                tv1.setText("Status: Enabled");
+
+            } else {
+                tv1.setText("Status: Disabled");
+
+            }
+
+        }
+
+    }
+
+    public void off(View v) {
+        bluetoothAdapter.disable();
+        tv1.setText("Status: Disconnected");
+        Toast.makeText(getApplicationContext(), "Bluetooth turned off",
+                Toast.LENGTH_LONG).show();
+
+    }
+
+    public void background(View v) {
+       int radiogrp1=radiogrp.getCheckedRadioButtonId();
+        int selectedColor;
+
+        sharedPreferences = getSharedPreferences(myPref, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+
+
+        switch (radiogrp1)
+        {
+            case R.id.redradiobtn:
+
+                selectedColor = getResources().getColor(R.color.red);
+                RelativeLayout rl=(RelativeLayout)findViewById(R.id.rellayout);
+                rl.setBackgroundColor(selectedColor);
+
+                editor.putInt(COLOR, selectedColor);
+
+                break;
+            case R.id.blueradiobtn:
+                selectedColor = getResources().getColor(R.color.blue);
+                RelativeLayout rl1=(RelativeLayout)findViewById(R.id.rellayout);
+                rl1.setBackgroundColor(selectedColor);
+                editor.putInt(COLOR,selectedColor);
+                break;
+
+            case R.id.greenradiobtn:
+                selectedColor = getResources().getColor(R.color.green);
+                RelativeLayout rl2=(RelativeLayout)findViewById(R.id.rellayout);
+                rl2.setBackgroundColor(selectedColor);
+                editor.putInt(COLOR, selectedColor);
+                break;
+            case R.id.whiteradiobtn:
+                selectedColor = getResources().getColor(R.color.white);
+                RelativeLayout rl3=(RelativeLayout)findViewById(R.id.rellayout);
+                rl3.setBackgroundColor(selectedColor);
+                editor.putInt(COLOR, selectedColor);
+                break;
+        }
+
+
+        editor.putInt(RADIOGROUP_KEY, radiogrp1);
+        editor.commit();
+
+
+    }
+}
